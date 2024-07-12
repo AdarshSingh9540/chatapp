@@ -23,6 +23,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  lastName: {
+    type: String, // Adding lastName field
+    required: false,
+  },
   color: {
     type: Number,
     required: false,
