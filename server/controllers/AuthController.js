@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
 import User from '../db/User.js'
 import { compare } from 'bcrypt';
-
+import { rename } from 'fs';
+import {renameSync,unlinkSync} from "fs"
 const maxAge = 3*24*60*60*1000;
 
 const createToken = (email,userId) =>{
@@ -121,6 +122,79 @@ export const getUserInfo = async (request, response, next) => {
 };
 
 export const updateProile = async (request, response, next) => {
+  try {
+    const {userId}=request;
+    const {firstName, lastName ,color} =request.body;
+    if(!firstName || !lastName || !color){
+      return response.status(400).send("FirstName  LastNAme Colore is required");
+
+    }
+       const userData = await User.findByIdAndUpdate(
+        userId,
+        {
+        firstName,lastName,color,profileSetup:true,
+       },{new:true,runValidators:true})
+   
+     return response.status(200).json(
+          {
+       
+          id:userData.id,
+          email:userData.email,
+          firstName:userData.firstName,
+          lastName:userData.lastName,
+          image:userData.image,
+          profileSetup:userData.profileSetup,
+          firstName:userData.firstName,
+          lastName:userData.lastName,
+          image:userData.image,
+          color:userData.color,
+    });
+  } catch (error) {
+    console.log({ error });
+    return response.status(500).send("Internal server error");
+  }
+};
+
+export const addProfileImage = async (request, response, next) => {
+  try {
+    console.log("Request file:", request.file);
+    console.log("Request body:", request.body);
+
+    if (!request.file) {
+      return response.status(400).send("File is required");
+    }
+
+    if (!request.file.path) {
+      return response.status(400).send("File path is missing");
+    }
+
+    const date = Date.now();
+    let fileName = "uploads/profiles/" + date + request.file.originalname;
+    
+    console.log("Old path:", request.file.path);
+    console.log("New path:", fileName);
+
+    renameSync(request.file.path, fileName);
+
+    const updateUser = await User.findByIdAndUpdate(
+      request.userId,
+      {
+        image: fileName,
+      },
+      { new: true, runValidators: true }
+    );   
+    return response.status(200).json({
+      image: updateUser.image,
+    });
+  } catch (error) {
+    console.error("Error in addProfileImage:", error);
+    return response.status(500).json({ error: error.message });
+  }
+};
+
+
+
+export const removeProfileImage = async (request, response, next) => {
   try {
     const {userId}=request;
     const {firstName, lastName ,color} =request.body;
