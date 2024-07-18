@@ -1,3 +1,4 @@
+import ProfileInfo from "./components/profileInfo";
 
 
 function ContactContainer() {
@@ -18,6 +19,7 @@ function ContactContainer() {
     </div>
 </div>
 
+         <ProfileInfo/>
 
     </div>
   )

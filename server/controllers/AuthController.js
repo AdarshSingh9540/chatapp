@@ -227,3 +227,15 @@ export const removeProfileImage = async (request, response, next) => {
     return response.status(500).send("Internal server error");
   }
 };
+
+
+
+export const logOut = async (request, response, next) => {
+  try {
+    response.cookie("jwt","",{maxAge:1,secure:true,samesite:"None"})
+    response.status(200).send("LogOut Successfull!")
+  } catch (error) {
+    console.log({ error });
+    return response.status(500).send("Internal server error");
+  }
+};
