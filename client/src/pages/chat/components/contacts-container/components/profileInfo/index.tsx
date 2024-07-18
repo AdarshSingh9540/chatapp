@@ -34,11 +34,11 @@ function ProfileInfo() {
     <div className='absolute bottom-0 h-15 flex items-center justify-center px-10 w-full bg-[#2a2b33] '> 
     
     <div className='flex gap-3 items-center justify-center'>
-       <div className='w-12 h-12 relative'>
+       <div className='w-12 h-12 relative mr-1'>
        <Avatar className="h-12 w-12  rounded-full overflow-hidden">
-                            {userInfo?.image ? (
-                                <AvatarImage src={`${HOST}/${userInfo?.image}`} className="object-cover w-full h-full bg-black" />
-                            ) : (
+                            {userInfo?.image ? <div className={`uppercase h-12 w-12 text-lg border-[1px] flex items-center rounded-full justify-center ${userInfo?.color}`}>
+                                    {userInfo?.firstName ? userInfo?.firstName.charAt(0) :userInfo?.email.charAt(0)}
+                                </div> : (
                                 <div className={`uppercase h-12 w-12 text-lg border-[1px] flex items-center rounded-full justify-center ${userInfo?.color}`}>
                                     {userInfo?.firstName ? userInfo?.firstName.charAt(0) :userInfo?.email.charAt(0)}
                                 </div>
@@ -46,17 +46,17 @@ function ProfileInfo() {
                         </Avatar>
        </div>
 
-       <div>
+       <div className='mr-1'>
         {userInfo?.firstName && userInfo?.lastName ? `${userInfo?.firstName} ${userInfo?.lastName}` : ""}
        </div>
     </div>
-    <div className="flex gap-5 ">
+    <div className="flex gap-4 ">
     <TooltipProvider>
   <Tooltip>
     <TooltipTrigger>
         <FiEdit2 
         onClick={() => navigate('/profile')}
-        className='text-purple-500 text-xl font-medium' />
+        className='text-purple-500 text-xl font-medium mx-1' />
     </TooltipTrigger>
     <TooltipContent className='bg-[#1c1b1e] border-none text-white'>
       Edit Profile
