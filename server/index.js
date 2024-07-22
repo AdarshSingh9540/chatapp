@@ -7,11 +7,12 @@ import authRoutes from './routes/AuthRoutes.js'
 import contactRoutes from './routes/ContactRoute.js';
 import setupSocket from './socket.js';
 import http from 'http';
+import messagesRoute from './routes/MessagesRoute.js';
 
 dotenv.config()
 
 const app = express();
-const PORT = process.env.PORT || 8787;
+const PORT = 8787;
 const databaseURL = process.env.DATABASE_URL;
 
 app.use(cors({
@@ -26,6 +27,7 @@ app.use(express.json());
 
 app.use('/api/auth/', authRoutes)
 app.use("/api/contacts", contactRoutes)
+app.use("/api/messages", messagesRoute);
 
 const server = http.createServer(app);
 

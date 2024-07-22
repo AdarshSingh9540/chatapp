@@ -11,4 +11,9 @@ export const ADD_PROFILE_IMAGE_ROUTE = `${AUTH_ROUTES}/add-profile-image`
 export const LOG_OUT_ROUTE = `${AUTH_ROUTES}/logout`
 
 export const CONTACT_ROUTES = "api/contacts"
+
 export const SEARCH_CONTACT_ROTES = `${CONTACT_ROUTES}/search`;
+
+
+export const MESSAGES_ROUTES = "api/messages";
+export const GET_ALL_MESSAGES_ROUTE =`${MESSAGES_ROUTES}/get-messages` 
