@@ -34,23 +34,26 @@ export const SocketProvider = ({ children }) => {
             //     console.log("Disconnected from server");
             // });
 
-            socket.current.on("recieveMessage", (message) => {
+            const handleReceiveMessages = (message) => {
+                const { selectedChatData, selectedChatType, addMessage } = useAppStore.getState();
+              
+                if (selectedChatType !== undefined && (selectedChatData._id === message.sender._id || selectedChatData._id === message.recipient._id)) {
+                  console.log("Received message:", message);
+                  addMessage(message);
+                }
+              };
+              
+              socket.current.on("receiveMessage", (message) => {
                 console.log("Received message:", message);
-                addMessage(message)
-                
-               
-            });
-
-         const handleRecieveMessages= (message) =>{
-            const {selectedChatData,selectedChatType} = useAppStore.getState();
-
-            if(selectedChatType!==undefined && (selectedChatData._id === message.sender._id || selectedChatData._id===message.recipient._id))
-                {
-                    console.log("rec",message)
-                addMessage(message)
-            }
-         }
-
+                handleReceiveMessages(message);
+              });
+              
+         socket.current.on("recieveMessage", (message) => {
+            console.log("Received message:", message);
+            addMessage(message)
+            
+           
+        });
             return () => {
                 socket.current.disconnect();
                 // if (socket.current) {

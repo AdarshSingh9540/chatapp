@@ -5,7 +5,7 @@ import { apiClient } from "../../../../../../lib/api-client";
 import { GET_ALL_MESSAGES_ROUTE } from "../../../../../../utils/constant";
 
 interface Message {
-  timestamp: string;
+  timeStamp: string;
   sender: { _id: string; email: string; color: number; firstName: string; lastName: string; };
   recipient: { _id: string; email: string; color: number; firstName: string; lastName: string; };
   messageType: string;
@@ -20,15 +20,13 @@ function ChatContainer() {
     const getMessages = async () => {
       try {
         const response = await apiClient.post(GET_ALL_MESSAGES_ROUTE, {
-          user1: 'user1_id',
-          user2: 'user2_id'
-      }, { withCredentials: true });
-      
+          id: selectedChatData._id
+        }, { withCredentials: true });
 
         console.log("API Response:", response);
 
-        if (response.data && Array.isArray(response.data.message)) {
-          setSelectedChatMessages(response.data.message);
+        if (response.data && Array.isArray(response.data.messages)) {
+          setSelectedChatMessages(response.data.messages);
         } else {
           console.error("Unexpected response structure:", response.data);
         }
@@ -40,7 +38,7 @@ function ChatContainer() {
     if (selectedChatData?._id && selectedChatType === "contact") {
       getMessages();
     }
-  }, [selectedChatData?._id, selectedChatType, setSelectedChatMessages]);
+  }, [selectedChatData, selectedChatType, setSelectedChatMessages]);
 
   useEffect(() => {
     console.log("Selected Chat Messages:", selectedChatMessages);
@@ -52,7 +50,6 @@ function ChatContainer() {
   const renderMessage = (): JSX.Element[] => {
     let lastDate: string | null = null;
 
-    // Ensure selectedChatMessages is an array
     if (!Array.isArray(selectedChatMessages)) {
       console.error("selectedChatMessages is not an array:", selectedChatMessages);
       return [];
@@ -61,15 +58,15 @@ function ChatContainer() {
     console.log("Rendering messages:", selectedChatMessages);
 
     return selectedChatMessages.map((message: Message, index: number) => {
-      const messageDate = moment(message.timestamp).format("YYYY-MM-DD");
+      const messageDate = moment(message.timeStamp).format("YYYY-MM-DD");
       const showDate = messageDate !== lastDate;
       lastDate = messageDate;
 
       return (
-        <div key={message.timestamp + index}>
+        <div key={index}>
           {showDate && (
             <div className="text-center text-gray-500 my-2">
-              {moment(message.timestamp).format("LL")}
+              {moment(message.timeStamp).format("LL")}
             </div>
           )}
           {selectedChatType === "contact" && renderDmMessage(message)}
@@ -79,7 +76,8 @@ function ChatContainer() {
   };
 
   const renderDmMessage = (message: Message): JSX.Element => (
-    <div className={`${message.sender._id === selectedChatData._id ? "text-left" : "text-right"}`}>
+    <div
+      className={`${message.sender._id === selectedChatData._id ? "text-left" : "text-right"}`}>
       {message.messageType === "text" && (
         <div
           className={`${message.sender._id !== selectedChatData._id ? "bg-white text-black" : "bg-white text-black"} border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
@@ -87,7 +85,7 @@ function ChatContainer() {
           {message.content}
         </div>
       )}
-      <div className="text-xs text-gray-600">{moment(message.timestamp).format("LT")}</div>
+      <div className="text-xs text-gray-600">{moment(message.timeStamp).format("LT")}</div>
     </div>
   );
 
